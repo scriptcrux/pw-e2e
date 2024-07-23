@@ -64,7 +64,22 @@ test.describe('New Todo', () => {
   });
 });
 
-test.describe('mark all as completed', () => {});
+test.describe('mark all as completed', () => {
+  test.beforeEach(async ({ page }) => {
+    await createTodos(page);
+  });
+
+  test('should allow me to mark all items as completed', async ({ page }) => {
+    await page.getByLabel('Mark all as complete').click();
+    expect(page.locator('.completed')).toHaveCount(3);
+    expect(page.locator('[data-testid="todo-item"]')).toHaveClass(['completed', 'completed', 'completed']);
+  });
+
+  test('complete all checkbox should update state when items are completed / cleared', async ({ page }) => {
+    await page.getByLabel('Mark all as complete').click();
+    await expect(page.locator('.toggle').nth(0)).toBeChecked();
+  });
+});
 
 /* 
 learning locators:
